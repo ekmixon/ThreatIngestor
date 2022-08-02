@@ -37,9 +37,7 @@ class Plugin(Source):
 
         # Form saved state.
         last_modified = response.headers.get('Last-Modified')
-        etag = response.headers.get('Etag')
-
-        if etag:
+        if etag := response.headers.get('Etag'):
             saved_state = ';'.join([str(last_modified), etag])
         else:
             saved_state = last_modified

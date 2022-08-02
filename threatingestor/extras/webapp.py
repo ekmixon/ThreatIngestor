@@ -84,32 +84,22 @@ def list_view(table):
     cursor.execute('SELECT name FROM sqlite_master WHERE type="table"')
     tables = [e[0] for e in cursor.fetchall()]
 
-    if table == 'index':
+    if table == 'index' or (not table or table not in tables) and not table:
         return tables
 
-    elif table and table in tables:
+    elif table in tables:
         cursor.execute(f'SELECT * FROM {table}')
 
-        data = []
         columns = [c[0] for c in cursor.description]
-        for row in cursor.fetchall():
-            data.append({k: v for k, v in zip(columns, row)})
-
-        return data
-
-    elif table:
-        return f"No table {table}"
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
     else:
-        return tables
+        return f"No table {table}"
 
 
 @hug.get('/{table}', output=hug.output_format.html)
 def html_view(table):
-    if table:
-        return LIST_HTML
-    else:
-        return INDEX_HTML
+    return LIST_HTML if table else INDEX_HTML
 
 
 db = sqlite3.connect(DATABASE)

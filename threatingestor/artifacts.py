@@ -21,7 +21,7 @@ class Artifact(object):
         May be overridden or extended by child classes.
         """
         regex = re.compile(pattern)
-        return True if regex.search(self.__str__()) else False
+        return bool(regex.search(self.__str__()))
 
 
     def format_message(self, message, **kwargs):
@@ -69,12 +69,11 @@ class URL(Artifact):
         for condition in conditions:
             if condition.lstrip(NOT) not in URL.__dict__:
                 raise ValueError('not a condition expression')
-            else:
-                result = URL.__dict__[condition.lstrip(NOT)](self)
-                if condition.startswith(NOT) and result:
-                    return False
-                elif not condition.startswith(NOT) and not result:
-                    return False
+            result = URL.__dict__[condition.lstrip(NOT)](self)
+            if condition.startswith(NOT) and result:
+                return False
+            elif not condition.startswith(NOT) and not result:
+                return False
         return True
 
 
@@ -129,11 +128,7 @@ class URL(Artifact):
     def is_obfuscated(self):
         """Boolean: is an obfuscated URL?"""
         stringlike = self._stringify()
-        if stringlike != self.artifact:
-            # don't treat "example.com" as obfuscated
-            if stringlike != 'http://' + self.artifact:
-                return True
-        return False
+        return stringlike not in [self.artifact, f'http://{self.artifact}']
 
 
     def is_ipv4(self):
@@ -184,9 +179,14 @@ class URL(Artifact):
             self.domain().encode('ascii')
         except UnicodeEncodeError:
             return False
-        return not self.is_ip() and len(self.domain()) > 3 and '.' in self.domain()[1:-1] and \
-               all([x.isalnum() or x in '-.' for x in self.domain()]) and \
-               self.domain()[self.domain().rfind('.')+1:].isalpha() and len(self.domain()[self.domain().rfind('.')+1:]) > 1
+        return (
+            not self.is_ip()
+            and len(self.domain()) > 3
+            and '.' in self.domain()[1:-1]
+            and all(x.isalnum() or x in '-.' for x in self.domain())
+            and self.domain()[self.domain().rfind('.') + 1 :].isalpha()
+            and len(self.domain()[self.domain().rfind('.') + 1 :]) > 1
+        )
 
 
     def deobfuscated(self):

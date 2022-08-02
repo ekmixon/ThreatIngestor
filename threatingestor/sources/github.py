@@ -17,10 +17,7 @@ class Plugin(Source):
         self.name = name
         self.search = search
 
-        if username and token:
-            self.auth = (username, token)
-        else:
-            self.auth = None
+        self.auth = (username, token) if username and token else None
 
 
     def _repository_search(self, params):
@@ -30,9 +27,7 @@ class Plugin(Source):
 
         repo_list = []
         while True:
-            for repo in response.json().get('items', []):
-                repo_list.append(repo)
-
+            repo_list.extend(iter(response.json().get('items', [])))
             if not response.links.get('next'):
                 break
 
@@ -56,7 +51,7 @@ class Plugin(Source):
                 timestamp=saved_state),
             "per_page": "100"}
 
-        saved_state = datetime.datetime.utcnow().isoformat()[:-7] + 'Z'
+        saved_state = f'{datetime.datetime.utcnow().isoformat()[:-7]}Z'
         repo_list = self._repository_search(params)
 
         artifact_list = []

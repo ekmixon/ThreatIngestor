@@ -27,9 +27,8 @@ class PasteProcessor(threatingestor.extras.queueworker.QueueWorker):
             start, end = url.split['.com/']
             url = '.com/raw/'.join([start, end])
 
-        # Gist
-        elif url.startswith("https://gist.github.com/") and not 'raw' in url:
-            url = url + '/raw'
+        elif url.startswith("https://gist.github.com/") and 'raw' not in url:
+            url = f'{url}/raw'
 
         # Fetch and return.
         response = requests.get(url)

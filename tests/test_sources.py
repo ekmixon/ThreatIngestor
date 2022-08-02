@@ -31,11 +31,11 @@ class TestSources(unittest.TestCase):
         content = '123.45.67.89 0 12.33.45.67 890'
 
         artifact_list = self.source.process_element(content, 'link')
-        self.assertEqual(artifact_list[0].reference_text, content[:15] + '...')
+        self.assertEqual(artifact_list[0].reference_text, f'{content[:15]}...')
 
         threatingestor.sources.TRUNCATE_LENGTH = 8
         artifact_list = self.source.process_element(content, 'link')
-        self.assertEqual(artifact_list[0].reference_text, content[:8] + '...')
+        self.assertEqual(artifact_list[0].reference_text, f'{content[:8]}...')
 
         threatingestor.sources.TRUNCATE_LENGTH = orig_truncate
 

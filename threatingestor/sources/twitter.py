@@ -22,7 +22,7 @@ class Plugin(Source):
 
         # Support for full tweet
         tweet_param = {'tweet_mode': 'extended'}
-        kwargs.update(tweet_param)
+        kwargs |= tweet_param
 
         # Forward kwargs.
         # NOTE: No validation is done here, so if the config is wrong, expect bad results.

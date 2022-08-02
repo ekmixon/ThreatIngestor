@@ -27,13 +27,31 @@ class TestOperators(unittest.TestCase):
         ]
 
         operator.process(artifact_list)
-        self.assertTrue(all([isinstance(x, threatingestor.artifacts.Domain) for x in operator.artifacts]))
+        self.assertTrue(
+            all(
+                isinstance(x, threatingestor.artifacts.Domain)
+                for x in operator.artifacts
+            )
+        )
+
         self.assertEqual(len(operator.artifacts), 2)
 
         operator.artifact_types = [threatingestor.artifacts.IPAddress, threatingestor.artifacts.URL]
         operator.artifacts = []
         operator.process(artifact_list)
-        self.assertTrue(all([isinstance(x, threatingestor.artifacts.IPAddress) or isinstance(x, threatingestor.artifacts.URL) for x in operator.artifacts]))
+        self.assertTrue(
+            all(
+                isinstance(
+                    x,
+                    (
+                        threatingestor.artifacts.IPAddress,
+                        threatingestor.artifacts.URL,
+                    ),
+                )
+                for x in operator.artifacts
+            )
+        )
+
         self.assertEqual(len(operator.artifacts), 2)
 
     def test_artifact_types_are_set_if_passed_in(self):

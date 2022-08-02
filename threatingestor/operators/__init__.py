@@ -61,16 +61,15 @@ class Operator:
             return False
 
         # Must match the filter string.
-        if not artifact.match(self.filter_string):
-            return False
-
-        # Must be in allowed_sources, if set.
-        if self.allowed_sources and not any(
-                [re.compile(p).search(artifact.source_name)
-                 for p in self.allowed_sources]):
-            return False
-
-        return True
+        return (
+            not self.allowed_sources
+            or any(
+                re.compile(p).search(artifact.source_name)
+                for p in self.allowed_sources
+            )
+            if artifact.match(self.filter_string)
+            else False
+        )
 
 
     def process(self, artifacts):

@@ -44,9 +44,7 @@ class Ingestor:
 
         if notifiers:
             notifier_config = self.config.notifiers()
-            notifier = notifiers.get_notifier(notifier_config.get('provider'))
-
-            if notifier:
+            if notifier := notifiers.get_notifier(notifier_config.get('provider')):
                 logger.debug(f"Adding notification handler '{notifier_config.get('provider')}'")
                 # Notifier 'provider_name' is set and valid.
                 handler = NotificationHandler(**notifier_config)

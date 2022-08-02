@@ -20,10 +20,7 @@ class Plugin(Operator):
     def __init__(self, url, key, ssl=True, tags=None, artifact_types=None, filter_string=None, allowed_sources=None):
         """MISP operator."""
         self.api = pymisp.ExpandedPyMISP(url, key, ssl)
-        if tags:
-            self.tags = tags
-        else:
-            self.tags = ['type:OSINT']
+        self.tags = tags or ['type:OSINT']
         self.event_info = 'ThreatIngestor Event: {source_name}'
 
         super(Plugin, self).__init__(
@@ -69,10 +66,7 @@ class Plugin(Operator):
     def _find_or_create_event(self, artifact):
         """Find or create an event for the artifact."""
         event = self._find_event(artifact)
-        if event is not None:
-            return event
-
-        return self._create_event(artifact)
+        return event if event is not None else self._create_event(artifact)
 
     def _find_event(self, artifact):
         """Find an event which has the same refetrence link, return an Event object."""
@@ -83,10 +77,7 @@ class Plugin(Operator):
             value=artifact.reference_link,
             pythonify=True
         )
-        if len(events) == 1:
-            return events[0]
-
-        return None
+        return events[0] if len(events) == 1 else None
 
     def _create_event(self, artifact):
         """Create an event in MISP, return an Event object."""

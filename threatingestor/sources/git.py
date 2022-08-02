@@ -76,7 +76,7 @@ class Plugin(Source):
         # Otherwise, process YARA files.
         artifact_list = []
         for filename in all_filenames:
-            if any([filename.endswith(x) for x in YARA_FILE_EXTS]):
+            if any(filename.endswith(x) for x in YARA_FILE_EXTS):
                 try:
                     with io.open(os.path.join(self.local_path, filename), 'r', encoding='utf-8', errors='ignore') as f:
                         artifact_list += self.process_element(f.read(), self.url, include_nonobfuscated=True)

@@ -24,7 +24,7 @@ class Plugin(Source):
 
         # Support for full tweet
         tweet_param = {'tweet_mode': 'extended'}
-        kwargs.update(tweet_param)
+        kwargs |= tweet_param
 
         # Forward kwargs.
         # NOTE: No validation is done here, so if the config is wrong, expect bad results.
@@ -85,7 +85,7 @@ class Plugin(Source):
 
                         # Check if the url is already returning the 'raw' pastebin. If not, update the url
                         if 'raw' not in url['expanded_url']:
-                            pastebin_id = re.search(r"pastebin.com/(.*?)$", url['expanded_url']).group(1)
+                            pastebin_id = re.search(r"pastebin.com/(.*?)$", url['expanded_url'])[1]
                             location = f"https://pastebin.com/raw/{pastebin_id}"
                         else:
                             location = url['expanded_url']

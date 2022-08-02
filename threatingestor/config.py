@@ -142,11 +142,7 @@ class Config:
                         # pass in special filter_string option
                         kwargs['filter_string'] = value
 
-                    elif key == NAME:
-                        # exclude name key from operator kwargs, since it's not used
-                        pass
-
-                    else:
+                    elif key != NAME:
                         kwargs[key] = value
 
                 elif key == 'credentials':
